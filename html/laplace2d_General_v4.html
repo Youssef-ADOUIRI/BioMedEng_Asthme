@@ -1,0 +1,656 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>laplace2d_General_v4</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-11-28"><meta name="DC.source" content="laplace2d_General_v4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> [A,B]=laplace2d_General_v4(F,nx,ny,L,D , eta , abs1 , ord1 , long1 , abs2 , ord2 , long2)
+
+
+dx=L/(nx-1); dy=D/(ny-1);
+a = 1/dx^2;
+b= 1/dy^2;
+c = -2/dx^2-2/dy^2;
+coeff=[a,b,c,b,a];
+alpha = 1/dx;
+beta = 1/dy;
+num = [ -nx, -1, 0, 1, nx];
+
+
+
+N=nx*ny;
+<span class="comment">%initialisation des matrices</span>
+A1 = zeros(N,N);
+A2 = zeros(N,N);
+A3 = zeros(N,N);
+
+Y1 = zeros(N,N);
+Y3 = zeros(N,N);
+
+P1 = zeros(N,N);
+P2 = zeros(N,N);
+P3 = zeros(N,N);
+
+
+B=reshape(F,3*N,1);
+Pg = 1;
+Pd = 0;
+
+<span class="comment">%Coeffs de P dans Stokes</span>
+<span class="keyword">for</span> i=2:nx-1
+    <span class="keyword">for</span> j=2:ny-1
+        k=(j-1)*nx+i;
+        P1(k , k + [0,1]) = [-1,  1];
+        P2(k , k + [0, nx]) = [-1,  1];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% C.L. sur les frontieres</span>
+<span class="keyword">for</span> i=1:nx
+    <span class="comment">%Ux = 0 en haut et en bas</span>
+    k = i; A1(k,:) = 0; P1(k,:)=0; A1(k,k)= 1.0;
+    k=(ny-1)*nx+i; A1(k,:) = 0; P1(k,:)=0; A1(k,k)= 1.0;
+<span class="keyword">end</span>
+
+<span class="comment">% conditions aux limites</span>
+<span class="keyword">for</span> j=2:ny-1
+    <span class="comment">%Ux = cst en droite et en gauche</span>
+    k=(j-1)*nx+1;
+    A1(k,:)=0; A1(k,k)=1.0; A1(k,j*nx)=-1.0; P1(k,:)=0;
+
+    <span class="comment">% derivee(Ux) = cst en droite et en gauche</span>
+    k =j*nx;
+    A1(k,:)=0; A1(k,(j-1)*nx+2)=1.0; A1(k,(j-1)*nx+1)=-1.0;A1(k,k)=-1.0;A1(k,k-1)=1.0; P1(k,:)=0;
+
+<span class="keyword">end</span>
+
+P2 = P2 * beta;
+P1 = P1 * alpha;
+
+<span class="comment">%div u = 0 centre dans le domaine</span>
+<span class="keyword">for</span> i=2:nx-1
+    <span class="keyword">for</span> j=2:ny-1
+        k=(j-1)*nx+i;
+        A3(k , k + [-1, 1]) = [-1, 1];
+        Y3(k , k + [-nx, nx]) = [-1, 1];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%Laplacien de P a gauche</span>
+<span class="keyword">for</span> j=2:ny-1
+    i = 2;
+    k = (j-1)*nx + i;
+    A3(k,:)=0;
+    Y3(k,:)=0;
+    P3(k,:)=0;
+    P3(k,k+num)=coeff;
+    <span class="comment">%Y3(k,k+[ -nx, -1, 0, 1, nx])=coeff;</span>
+    <span class="comment">%P3(k,k)=beta/eta;P3(k,k+1)=-alpha/eta;</span>
+<span class="keyword">end</span>
+
+<span class="comment">% for i=2:nx-1</span>
+<span class="comment">%     j = 2;</span>
+<span class="comment">%     k = (j-1)*nx + i;</span>
+<span class="comment">%     Y3(k,:)=0;</span>
+<span class="comment">%     A3(k,:)=0;</span>
+<span class="comment">%     P3(k,k+num)=coeff;</span>
+<span class="comment">%     P3(k,k)=-beta/eta;P3(k,k+nx)=beta/eta;</span>
+<span class="comment">% end</span>
+
+
+
+A3 = A3 * alpha/2;
+Y3 = Y3 * beta/2;
+
+<span class="comment">%condition de pression a g et d</span>
+<span class="keyword">for</span> j=1:ny
+    k=(j-1)*nx+1;A3(k,:)=0;Y3(k,:)=0; P3(k,:)=0;P3(k,k) = 1.0; B(2*N + k)=Pg;
+    k=(j-1)*nx+nx;A3(k,:)=0;Y3(k,:)=0; P3(k,:)=0;P3(k,k) = 1.0; B(2*N + k)=Pd;
+<span class="keyword">end</span>
+
+
+<span class="comment">% conditions a la derive normale hors</span>
+<span class="keyword">for</span> i=2:abs1-1
+    k=(ny-1)*nx + i;
+    Y3(k,k) = 1.0; Y3(k , k - nx) = -1.0;
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i=abs1+long1+1:nx-1
+    k=(ny-1)*nx +i;
+    Y3(k,k) = 1.0; Y3(k ,k - nx) = -1.0;
+<span class="keyword">end</span>
+<span class="comment">%derivee normale dans obstacle 1</span>
+<span class="keyword">for</span> i=abs1+1:abs1+long1-1
+    k=(ny-ord1 - 1)*nx +i;
+    Y3(k,k) = 1.0; Y3(k ,k - nx) = -1.0;
+<span class="keyword">end</span>
+
+<span class="comment">% conditions a la derive normale hors 2</span>
+<span class="keyword">for</span> i=2:abs2-1
+    k=i;
+    Y3(k,:) = 0; A3(k,:) = 0; P3(k,:) = 0;
+    <span class="comment">% Y3(k,k) = 1.0; Y3(k ,k + nx) = -1.0;</span>
+    Y3(k,k+[ -nx, -1, 0, 1, nx]+nx)=coeff;
+    P3(k,k)=beta/eta;P3(k,k+2*nx)=-beta/eta;
+<span class="keyword">end</span>
+<span class="keyword">for</span> i=abs2+long2+1:nx-1
+    k=i;
+    Y3(k,:) = 0; A3(k,:) = 0; P3(k,:) = 0;
+    Y3(k,k+[ -nx, -1, 0, 1, nx]+nx)=coeff;
+    P3(k,k)=beta/eta;P3(k,k+2*nx)=-beta/eta;
+<span class="keyword">end</span>
+<span class="comment">%derivee normale dans obstacle 2</span>
+<span class="keyword">for</span> i=abs2+1:abs2+long2-1
+    k=(ord2 - 1)*nx +i;
+    Y3(k,:) = 0; A3(k,:) = 0; P3(k,:) = 0;
+    Y3(k,k+[ -nx, -1, 0, 1, nx]+nx)=coeff;
+    P3(k,k)=beta/eta;P3(k,k+2*nx)=-beta/eta;
+<span class="keyword">end</span>
+
+
+
+
+<span class="comment">%derivee normale gauche droite obstocale 1</span>
+<span class="keyword">for</span> j=ny-ord1+1:ny-1
+    k=(j-1)*nx+abs1;
+    A3(k,k) = 1.0; A3(k ,k - 1) = -1.0;
+
+    k=(j-1)*nx+abs1+long1;
+    A3(k,k) = -1.0; A3(k , k + 1) = 1.0;
+<span class="keyword">end</span>
+<span class="comment">%derivee normale gauche droite obstocale 2</span>
+<span class="keyword">for</span> j=2:ord2-1
+    k=(j-1)*nx+abs2;
+    A3(k,k) = 1.0; A3(k ,k - 1) = -1.0;
+
+    k=(j-1)*nx+abs2+long2;
+    A3(k,k) = -1.0; A3(k , k + 1) = 1.0;
+<span class="keyword">end</span>
+
+
+
+
+P2 = P2 * -1/eta;
+P1 = P1 * -1/eta;
+
+<span class="keyword">for</span> i=2:nx-1
+    <span class="keyword">for</span> j=2:ny-1
+        k=(j-1)*nx+i;
+        A1(k,k+num)=coeff;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%obstacle bas</span>
+
+
+<span class="comment">%mettre des valeurs nulles a l'interieur d'obstacle 1</span>
+<span class="keyword">for</span> i=abs1:abs1+long1
+    <span class="keyword">for</span> j=ny-ord1:ny
+        k=(j-1)*nx+i;
+        A1(k,:) =0;
+        P1(k,:) =0;
+        P2(k,:) =0;
+        A1(k , k) = 1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%mettre des valeurs nulles a l'interieur d'obstacle 2</span>
+<span class="keyword">for</span> i=abs2:abs2+long2
+    <span class="keyword">for</span> j=1:ord2
+        k=(j-1)*nx+i;
+        A1(k,:) =0;
+        P1(k,:) =0;
+        P2(k,:) =0;
+        A1(k , k) = 1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+<span class="comment">%pression nulle a l'interieur d'obstacle 1</span>
+<span class="keyword">for</span> i=abs1+1:abs1+long1-1
+    <span class="keyword">for</span> j=ny-ord1+1:ny
+        k=(j-1)*nx + i;
+        A3(k,:) = 0;
+        Y3(k,:) = 0;
+        P3(k,:) = 0;
+        P3(k , k) = 1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%pression nulle a l'interieur d'obstacle 2</span>
+<span class="keyword">for</span> i=abs2+1:abs2+long2-1
+    <span class="keyword">for</span> j=1:ord2-1
+        k=(j-1)*nx + i;
+        A3(k,:) = 0;
+        Y3(k,:) = 0;
+        P3(k,:) = 0;
+        P3(k , k) = 1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%droite d'obstacele 1 pression</span>
+<span class="keyword">for</span> j=ny-ord1:ny - 1
+i = abs1 + long1 ;
+k = (j-1)*nx + i;
+    A3(k,:)=0;
+    Y3(k,:)=0;
+    P3(k,:)=0;
+    <span class="comment">%P3(k,k+num)=coeff;</span>
+    A3(k,k+[ -nx, -1, 0, 1, nx]+1)=coeff;
+    P3(k,k)=alpha/eta;P3(k,k+1)=-alpha/eta;
+<span class="keyword">end</span>
+<span class="comment">%droite d'obstacele 2 pression</span>
+<span class="keyword">for</span> j=2:ord2
+i = abs2 + long2;
+k = (j-1)*nx + i;
+    A3(k,:)=0;
+    Y3(k,:)=0;
+    P3(k,:)=0;
+    <span class="comment">%P3(k,k+num)=coeff;</span>
+    A3(k,k+[ -nx, -1, 0, 1, nx]+1)=coeff;
+    P3(k,k)=alpha/eta;P3(k,k+1)=-alpha/eta;
+<span class="keyword">end</span>
+
+<span class="comment">% for i=abs:abs + long</span>
+<span class="comment">% j =ny-ord-1;</span>
+<span class="comment">%   k = (j-1)*nx + i;</span>
+<span class="comment">%     Y3(k,:)=0;</span>
+<span class="comment">%     %Y3(k,k-nx) = -1;</span>
+<span class="comment">%     P3(k,k+num)=coeff;</span>
+<span class="comment">% end</span>
+
+<span class="comment">%conditions corners immerges</span>
+<span class="keyword">for</span> k=[(ny - ord1 - 1)*nx + abs1,  (ny - ord1-1)*nx+abs1 + long1]
+    Y3(k,k) = 1.0; Y3(k , k - nx) = -1.0;
+<span class="keyword">end</span>
+<span class="comment">%conditions corners immerges 2</span>
+<span class="keyword">for</span> k=[(ord2 - 1)*nx + abs2,  (ord2-1)*nx+abs2 + long2]
+    Y3(k,k) = 1.0; Y3(k , k + nx) = -1.0;
+<span class="keyword">end</span>
+
+<span class="comment">%conditions corners parois</span>
+<span class="keyword">for</span> k=[(ny - 1)*nx + abs1,  (ny -1)*nx+abs1 + long1]
+
+    Y3(k,k+1) =a;
+    Y3(k,k-1)=a;
+    Y3(k,k)=c;
+    Y3(k,k-2*nx)=b;
+    Y3(k,k-nx)=b;
+
+    P3(k,k)=beta/eta;
+    P3(k,k-nx)=-beta/eta;
+<span class="keyword">end</span>
+<span class="comment">%conditions corners parois 2</span>
+<span class="keyword">for</span> k=[abs2,  abs2 + long2]
+
+    Y3(k,k+1) =a;
+    Y3(k,k-1)=a;
+    Y3(k,k)=c;
+    Y3(k,k+2*nx)=b;
+    Y3(k,k+nx)=b;
+
+    P3(k,k)=beta/eta;
+    P3(k,k+nx)=-beta/eta;
+<span class="keyword">end</span>
+
+Y2 = A1;
+A = [A1 Y1 P1; A2 Y2 P2; A3 Y3 P3];
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in laplace2d_General_v4 (line 4)
+dx=L/(nx-1); dy=D/(ny-1);
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [A,B]=laplace2d_General_v4(F,nx,ny,L,D , eta , abs1 , ord1 , long1 , abs2 , ord2 , long2)
+
+
+dx=L/(nx-1); dy=D/(ny-1);
+a = 1/dx^2;
+b= 1/dy^2;
+c = -2/dx^2-2/dy^2;
+coeff=[a,b,c,b,a];
+alpha = 1/dx;
+beta = 1/dy;
+num = [ -nx, -1, 0, 1, nx];
+
+
+
+N=nx*ny;
+%initialisation des matrices
+A1 = zeros(N,N);
+A2 = zeros(N,N);
+A3 = zeros(N,N);
+
+Y1 = zeros(N,N);
+Y3 = zeros(N,N);
+
+P1 = zeros(N,N);
+P2 = zeros(N,N);
+P3 = zeros(N,N);
+
+
+B=reshape(F,3*N,1);
+Pg = 1;
+Pd = 0;
+
+%Coeffs de P dans Stokes
+for i=2:nx-1
+    for j=2:ny-1
+        k=(j-1)*nx+i;
+        P1(k , k + [0,1]) = [-1,  1];
+        P2(k , k + [0, nx]) = [-1,  1];
+    end
+end
+
+% C.L. sur les frontieres
+for i=1:nx
+    %Ux = 0 en haut et en bas
+    k = i; A1(k,:) = 0; P1(k,:)=0; A1(k,k)= 1.0;
+    k=(ny-1)*nx+i; A1(k,:) = 0; P1(k,:)=0; A1(k,k)= 1.0;
+end
+
+% conditions aux limites
+for j=2:ny-1
+    %Ux = cst en droite et en gauche
+    k=(j-1)*nx+1;
+    A1(k,:)=0; A1(k,k)=1.0; A1(k,j*nx)=-1.0; P1(k,:)=0;
+    
+    % derivee(Ux) = cst en droite et en gauche
+    k =j*nx;
+    A1(k,:)=0; A1(k,(j-1)*nx+2)=1.0; A1(k,(j-1)*nx+1)=-1.0;A1(k,k)=-1.0;A1(k,k-1)=1.0; P1(k,:)=0;
+    
+end
+
+P2 = P2 * beta;
+P1 = P1 * alpha;
+
+%div u = 0 centre dans le domaine
+for i=2:nx-1
+    for j=2:ny-1
+        k=(j-1)*nx+i;
+        A3(k , k + [-1, 1]) = [-1, 1];
+        Y3(k , k + [-nx, nx]) = [-1, 1];
+    end
+end
+
+%Laplacien de P a gauche
+for j=2:ny-1
+    i = 2;
+    k = (j-1)*nx + i;
+    A3(k,:)=0;
+    Y3(k,:)=0;
+    P3(k,:)=0;
+    P3(k,k+num)=coeff;
+    %Y3(k,k+[ -nx, -1, 0, 1, nx])=coeff;
+    %P3(k,k)=beta/eta;P3(k,k+1)=-alpha/eta;
+end
+
+% for i=2:nx-1
+%     j = 2;
+%     k = (j-1)*nx + i;
+%     Y3(k,:)=0;
+%     A3(k,:)=0;
+%     P3(k,k+num)=coeff;
+%     P3(k,k)=-beta/eta;P3(k,k+nx)=beta/eta;
+% end
+
+
+
+A3 = A3 * alpha/2;
+Y3 = Y3 * beta/2;
+
+%condition de pression a g et d
+for j=1:ny
+    k=(j-1)*nx+1;A3(k,:)=0;Y3(k,:)=0; P3(k,:)=0;P3(k,k) = 1.0; B(2*N + k)=Pg;
+    k=(j-1)*nx+nx;A3(k,:)=0;Y3(k,:)=0; P3(k,:)=0;P3(k,k) = 1.0; B(2*N + k)=Pd;
+end
+
+
+% conditions a la derive normale hors
+for i=2:abs1-1
+    k=(ny-1)*nx + i; 
+    Y3(k,k) = 1.0; Y3(k , k - nx) = -1.0;
+end
+
+for i=abs1+long1+1:nx-1
+    k=(ny-1)*nx +i; 
+    Y3(k,k) = 1.0; Y3(k ,k - nx) = -1.0;
+end
+%derivee normale dans obstacle 1
+for i=abs1+1:abs1+long1-1
+    k=(ny-ord1 - 1)*nx +i;
+    Y3(k,k) = 1.0; Y3(k ,k - nx) = -1.0;
+end
+
+% conditions a la derive normale hors 2
+for i=2:abs2-1
+    k=i;
+    Y3(k,:) = 0; A3(k,:) = 0; P3(k,:) = 0;
+    % Y3(k,k) = 1.0; Y3(k ,k + nx) = -1.0;
+    Y3(k,k+[ -nx, -1, 0, 1, nx]+nx)=coeff;
+    P3(k,k)=beta/eta;P3(k,k+2*nx)=-beta/eta;
+end
+for i=abs2+long2+1:nx-1
+    k=i;
+    Y3(k,:) = 0; A3(k,:) = 0; P3(k,:) = 0;
+    Y3(k,k+[ -nx, -1, 0, 1, nx]+nx)=coeff;
+    P3(k,k)=beta/eta;P3(k,k+2*nx)=-beta/eta;
+end
+%derivee normale dans obstacle 2
+for i=abs2+1:abs2+long2-1
+    k=(ord2 - 1)*nx +i;
+    Y3(k,:) = 0; A3(k,:) = 0; P3(k,:) = 0;
+    Y3(k,k+[ -nx, -1, 0, 1, nx]+nx)=coeff;
+    P3(k,k)=beta/eta;P3(k,k+2*nx)=-beta/eta;
+end
+
+
+
+
+%derivee normale gauche droite obstocale 1
+for j=ny-ord1+1:ny-1
+    k=(j-1)*nx+abs1; 
+    A3(k,k) = 1.0; A3(k ,k - 1) = -1.0;
+
+    k=(j-1)*nx+abs1+long1; 
+    A3(k,k) = -1.0; A3(k , k + 1) = 1.0;
+end
+%derivee normale gauche droite obstocale 2
+for j=2:ord2-1
+    k=(j-1)*nx+abs2; 
+    A3(k,k) = 1.0; A3(k ,k - 1) = -1.0;
+
+    k=(j-1)*nx+abs2+long2; 
+    A3(k,k) = -1.0; A3(k , k + 1) = 1.0;
+end
+
+
+
+
+P2 = P2 * -1/eta;
+P1 = P1 * -1/eta;
+
+for i=2:nx-1
+    for j=2:ny-1
+        k=(j-1)*nx+i;
+        A1(k,k+num)=coeff;
+    end
+end
+
+%obstacle bas
+
+
+%mettre des valeurs nulles a l'interieur d'obstacle 1
+for i=abs1:abs1+long1
+    for j=ny-ord1:ny
+        k=(j-1)*nx+i;
+        A1(k,:) =0;
+        P1(k,:) =0;
+        P2(k,:) =0;
+        A1(k , k) = 1;
+    end
+end
+%mettre des valeurs nulles a l'interieur d'obstacle 2
+for i=abs2:abs2+long2
+    for j=1:ord2
+        k=(j-1)*nx+i;
+        A1(k,:) =0;
+        P1(k,:) =0;
+        P2(k,:) =0;
+        A1(k , k) = 1;
+    end
+end
+
+
+%pression nulle a l'interieur d'obstacle 1
+for i=abs1+1:abs1+long1-1
+    for j=ny-ord1+1:ny
+        k=(j-1)*nx + i;
+        A3(k,:) = 0;
+        Y3(k,:) = 0;
+        P3(k,:) = 0;
+        P3(k , k) = 1;
+    end
+end
+%pression nulle a l'interieur d'obstacle 2
+for i=abs2+1:abs2+long2-1
+    for j=1:ord2-1
+        k=(j-1)*nx + i;
+        A3(k,:) = 0;
+        Y3(k,:) = 0;
+        P3(k,:) = 0;
+        P3(k , k) = 1;
+    end
+end
+
+%droite d'obstacele 1 pression
+for j=ny-ord1:ny - 1
+i = abs1 + long1 ;
+k = (j-1)*nx + i;
+    A3(k,:)=0;
+    Y3(k,:)=0;
+    P3(k,:)=0;
+    %P3(k,k+num)=coeff;
+    A3(k,k+[ -nx, -1, 0, 1, nx]+1)=coeff;
+    P3(k,k)=alpha/eta;P3(k,k+1)=-alpha/eta;
+end
+%droite d'obstacele 2 pression
+for j=2:ord2
+i = abs2 + long2;
+k = (j-1)*nx + i;
+    A3(k,:)=0;
+    Y3(k,:)=0;
+    P3(k,:)=0;
+    %P3(k,k+num)=coeff;
+    A3(k,k+[ -nx, -1, 0, 1, nx]+1)=coeff;
+    P3(k,k)=alpha/eta;P3(k,k+1)=-alpha/eta;
+end
+
+% for i=abs:abs + long
+% j =ny-ord-1;
+%   k = (j-1)*nx + i;
+%     Y3(k,:)=0;
+%     %Y3(k,k-nx) = -1;
+%     P3(k,k+num)=coeff;
+% end
+
+%conditions corners immerges
+for k=[(ny - ord1 - 1)*nx + abs1,  (ny - ord1-1)*nx+abs1 + long1]
+    Y3(k,k) = 1.0; Y3(k , k - nx) = -1.0;
+end
+%conditions corners immerges 2
+for k=[(ord2 - 1)*nx + abs2,  (ord2-1)*nx+abs2 + long2]
+    Y3(k,k) = 1.0; Y3(k , k + nx) = -1.0;
+end
+
+%conditions corners parois
+for k=[(ny - 1)*nx + abs1,  (ny -1)*nx+abs1 + long1]
+    
+    Y3(k,k+1) =a;
+    Y3(k,k-1)=a;
+    Y3(k,k)=c;
+    Y3(k,k-2*nx)=b;
+    Y3(k,k-nx)=b;
+    
+    P3(k,k)=beta/eta;
+    P3(k,k-nx)=-beta/eta;
+end
+%conditions corners parois 2
+for k=[abs2,  abs2 + long2]
+    
+    Y3(k,k+1) =a;
+    Y3(k,k-1)=a;
+    Y3(k,k)=c;
+    Y3(k,k+2*nx)=b;
+    Y3(k,k+nx)=b;
+    
+    P3(k,k)=beta/eta;
+    P3(k,k+nx)=-beta/eta;
+end
+
+Y2 = A1;
+A = [A1 Y1 P1; A2 Y2 P2; A3 Y3 P3];
+
+##### SOURCE END #####
+--></body></html>
