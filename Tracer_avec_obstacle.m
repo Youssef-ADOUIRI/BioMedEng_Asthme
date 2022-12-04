@@ -2,8 +2,8 @@ clc
 
 %Variables Global
 global M N D L eta Pg Pd
-M = 240/2;
-N = 80/2;
+M = 120;
+N = 40;
 D = 0.0075;
 L = 0.0532;
 eta = 1.79e-5;
@@ -11,9 +11,9 @@ Pg = 0.082;
 Pd = 0;
 
 %Variables Local (obstacle)
-abs1 = 100/2;
-ord1 = 16/2;
-long1 = 60/2;
+abs1 = 50;
+ord1 = 8;
+long1 = 30;
 
 F=zeros(M,3*N);
 [A,B]=laplace2d_General_v1(F,M,N,L,D,eta,Pg,Pd , abs1 , ord1 , long1);
@@ -72,3 +72,10 @@ disp(['Incértitude : ' , num2str(p*100) , '%'])
 figure(4);plot(X,DQ);title('Debit calculée');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 2.5e-3 ]);
 figure(5);plot(X,DQt);title('Debit Thorique');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 3.5e-3 ]);
 figure(6);plot(X,(DQt./DQ)*100);title('(Debit Thorique) / (Debit calculée)  ');xlabel('Longeur X'); ylabel('Rapport %');axis([ 0 L 0 100 ]);
+
+%Moyen debit
+disp(['Moyen du debit : ' , num2str(mean(Q)) , ' SI'])
+
+%Resistance
+Rh = (Pg - Pd)/mean(Q);
+disp(['Resistance hydraulique : ' , num2str(Rh) , ' SI'])
