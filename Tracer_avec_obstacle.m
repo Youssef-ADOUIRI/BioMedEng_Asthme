@@ -1,10 +1,9 @@
 clc
-clear all
 
 %Variables Global
 global M N D L eta Pg Pd
-M = 120;
-N = 40;
+M = 100;
+N = 100;
 D = 0.0075;
 L = 0.0532;
 eta = 1.79e-5;
@@ -12,9 +11,9 @@ Pg = 0.082;
 Pd = 0;
 
 %Variables Local (obstacle)
-abs1 = 50;
-ord1 = 10;
-long1 = 20;
+abs1 = 20;
+ord1 = 30;
+long1 = 40;
 
 F=zeros(M,3*N);
 [A,B]=laplace2d_General_v1(F,M,N,L,D,eta,Pg,Pd , abs1 , ord1 , long1);
@@ -57,15 +56,19 @@ for k=1:M
     DQ(k)=Q;
 end
 for k=2:M-1
-    if k < abs1-1 || k > abs1 + long1+1
-        Qt = (mean(Pr(k-1,:)) -  mean(Pr(k+1,:))) * (D^3) / (2*eta*L);
+    if k < abs1-1 || k > abs1 + long1
+        Qt = (mean(Pr(k-1,:)) -  mean(Pr(k+1,:))) * (D^3) / (12*eta*2*L/(M-1));
     else
         d = ( N - ord1 -2 )*D/(N -1);
-        Qt = (mean(Pr(k-1,1:N - ord1 - 1)) -  mean(Pr(k+1,1:N - ord1 - 1))) * (d^3) / (2*eta*L);
+        Qt = (mean(Pr(k-1,1:N - ord1 - 1)) -  mean(Pr(k+1,1:N - ord1 - 1))) * (d^3) / (12*eta*2*L/(M-1));
     end
     DQt(k)=Qt;
 end
+%fin limite
+DQt(1) = (mean(Pr(1,:)) -  mean(Pr(2,:))) * (D^3) / (12*eta*L/(M-1));
+DQt(M) = (mean(Pr(M-1,:)) -  mean(Pr(M,:))) * (D^3) / (12*eta*L/(M-1));
 p = (max(DQ)-min(DQ))/mean(DQ);
 disp(['Incértitude : ' , num2str(p*100) , '%'])
-figure(4);plot(X,DQ);title('Debit calculée');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 5e-3 ]);
-figure(5);plot(X,DQ);title('Debit Thorique');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 5e-3 ]);
+figure(4);plot(X,DQ);title('Debit calculée');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 2.5e-3 ]);
+figure(5);plot(X,DQt);title('Debit Thorique');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 3.5e-3 ]);
+figure(6);plot(X,(DQt./DQ)*100);title('(Debit Thorique) / (Debit calculée)  ');xlabel('Longeur X'); ylabel('Rapport %');axis([ 0 L 0 100 ]);
