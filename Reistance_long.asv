@@ -3,7 +3,7 @@ clc
 %Variables Global
 global M N D L eta Pg Pd
 
-%Variables Local 
+%Variables Local (obstacle)
 abs1 = 50;
 ord1 = 2;
 long1 = 5;
@@ -17,11 +17,11 @@ X_arr = zeros(ite_num);
 for k=1:ite_num
     c = 1+k*0.4;
     abs=abs1;
-    ord=round(c*ord1);
-    if ord >= (N-4)
+    ord=ord1;
+    long=round(c*long1);
+    if abs + long >= (M-2)
         break;
     end
-    long=long1;
     F = zeros(M,3*N);
     [A,B]=laplace2d_General_v1(F,M,N,L,D,eta,Pg,Pd,abs,ord,long);
     U =A\B;
@@ -36,9 +36,9 @@ for k=1:ite_num
             U_xy(i,j)= sqrt(U_x(i,j)^2+U_y(i,j)^2);
         end
     end
+    
     %Debit
     DQ = zeros(1,M);
-    
     for i=1:M
         if i < abs1-1 || i > abs1 + long1+1
             Q = mean(U_xy(i,:)) * D;
@@ -51,9 +51,9 @@ for k=1:ite_num
     Rh = (Pg - Pd)/mean(DQ);
     disp([ num2str(k) , ') Resistance hydraulique : ' , num2str(Rh) , ' SI'])
     R_arr(k) = Rh;
-    X_arr(k) = ord*dy;
+    X_arr(k) = long*dx;
 end
 
-figure(1);plot(X_arr(1:k-1),R_arr(1:k-1) , 'b--o');
-title('Resistance hydraulique en fonction de hauteur obstacle');
-xlabel('E1 (en m)'); ylabel('Resistance hydraulique');
+figure(2);plot(X_arr(1:k-1),R_arr(1:k-1) , 'b--o');
+title('Resistance hydraulique en fonction de longeur obstacle');
+xlabel('epsilon 2'); ylabel('Resistance hydraulique');

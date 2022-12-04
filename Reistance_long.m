@@ -36,9 +36,9 @@ for k=1:ite_num
             U_xy(i,j)= sqrt(U_x(i,j)^2+U_y(i,j)^2);
         end
     end
+    
     %Debit
     DQ = zeros(1,M);
-    
     for i=1:M
         if i < abs1-1 || i > abs1 + long1+1
             Q = mean(U_xy(i,:)) * D;
@@ -47,6 +47,7 @@ for k=1:ite_num
         end
         DQ(i)=Q;
     end
+    
     %Resistance
     Rh = (Pg - Pd)/mean(DQ);
     disp([ num2str(k) , ') Resistance hydraulique : ' , num2str(Rh) , ' SI'])

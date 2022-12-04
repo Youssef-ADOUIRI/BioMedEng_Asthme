@@ -20,10 +20,8 @@ Q_arr = zeros(ite_num);
 X_arr = zeros(ite_num);
 for k=1:ite_num
     c = 1+k*0.4;
-
     m = round(M*c);
     n = round(N*c);
-    
     F = zeros(m,3*n);
     [A,B]=laplace2d_General_v0(F,m,n,L,D,eta,Pg,Pd);
     U =A\B;
@@ -45,12 +43,10 @@ for k=1:ite_num
         DQ(i)=mean(U_xy(i,:)) * D;
     end
     
-    Qm = mean(DQ);
-    disp([ num2str(k) , ') Débit moyen : ' , num2str(Qm) , ' SI'])
-    Q_arr(k) = Qm;
-    X_arr(k) = ite_num; % ??
+    Q_arr(k) = mean(DQ);
+    X_arr(k) = ite
 end
 %Ploting
 figure(1);plot(X_arr(1:k-1),R_arr(1:k-1) , 'r--o');
-title('Debit moyen dans un tube deroit en faction de facteur d"augmentation de maillage');
+title('Resistance hydraulique en fonction de hauteur obstacle');
 xlabel('epsilon 1'); ylabel('Resistance hydraulique');

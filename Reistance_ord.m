@@ -3,7 +3,7 @@ clc
 %Variables Global
 global M N D L eta Pg Pd
 
-%Variables Local (obstacle)
+%Variables Local 
 abs1 = 50;
 ord1 = 2;
 long1 = 5;
@@ -56,4 +56,4 @@ end
 
 figure(1);plot(X_arr(1:k-1),R_arr(1:k-1) , 'b--o');
 title('Resistance hydraulique en fonction de hauteur obstacle');
-xlabel('epsilon 1'); ylabel('Resistance hydraulique');
+xlabel('E1 (en m)'); ylabel('Resistance hydraulique (en Pa.s/m²)');
