@@ -2,8 +2,8 @@ clc
 
 %Variables Global
 global M N D L eta Pg Pd
-M = 100;
-N = 100;
+M = 240/2;
+N = 80/2;
 D = 0.0075;
 L = 0.0532;
 eta = 1.79e-5;
@@ -11,9 +11,9 @@ Pg = 0.082;
 Pd = 0;
 
 %Variables Local (obstacle)
-abs1 = 20;
-ord1 = 30;
-long1 = 40;
+abs1 = 100/2;
+ord1 = 16/2;
+long1 = 60/2;
 
 F=zeros(M,3*N);
 [A,B]=laplace2d_General_v1(F,M,N,L,D,eta,Pg,Pd , abs1 , ord1 , long1);
@@ -48,19 +48,19 @@ DQ = zeros(1,M);
 DQt = zeros(1,M);
 
 for k=1:M
-    if k < abs1 || k > abs1 + long1
+    if k < abs1-1 || k > abs1 + long1+1
         Q = mean(U_xy(k,:)) * D;
-    else
-        Q = mean(U_xy(k, 1:N - ord1 - 1)) * ( N - ord1 -2 )*D/(N -1);
+    elseif k > abs1 && k < abs1 + long1
+        Q = mean(U_xy(k, 1:N - ord1)) * ( N - ord1)*D/(N - 1);
     end
     DQ(k)=Q;
 end
 for k=2:M-1
-    if k < abs1-1 || k > abs1 + long1
+    if k < abs1-1 || k > abs1 + long1 + 1
         Qt = (mean(Pr(k-1,:)) -  mean(Pr(k+1,:))) * (D^3) / (12*eta*2*L/(M-1));
-    else
-        d = ( N - ord1 -2 )*D/(N -1);
-        Qt = (mean(Pr(k-1,1:N - ord1 - 1)) -  mean(Pr(k+1,1:N - ord1 - 1))) * (d^3) / (12*eta*2*L/(M-1));
+    elseif k > abs1 && k < abs1 + long1
+        d = ( N - ord1 - 2)*D/(N - 1);
+        Qt = (mean(Pr(k-1,1:N - ord1 -1)) -  mean(Pr(k+1,1:N - ord1 -1))) * (d^3) / (12*eta*2*L/(M-1));
     end
     DQt(k)=Qt;
 end
