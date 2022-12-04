@@ -17,11 +17,11 @@ X_arr = zeros(ite_num);
 for k=1:ite_num
     c = 1+k*0.4;
     abs=abs1;
-    ord=round(c*ord1);
-    if ord >= (N-4)
+    ord=ord1;
+    long=round(c*long1);
+    if abs + long >= (M-2)
         break;
     end
-    long=long1;
     F = zeros(M,3*N);
     [A,B]=laplace2d_General_v1(F,M,N,L,D,eta,Pg,Pd,abs,ord,long);
     U =A\B;
@@ -51,9 +51,9 @@ for k=1:ite_num
     Rh = (Pg - Pd)/mean(DQ);
     disp([ num2str(k) , ') Resistance hydraulique : ' , num2str(Rh) , ' SI'])
     R_arr(k) = Rh;
-    X_arr(k) = ord*dy;
+    X_arr(k) = long*dx;
 end
 
-figure(1);plot(X_arr(1:k-1),R_arr(1:k-1) , 'b--o');
-title('Resistance hydraulique en fonction de hauteur obstacle');
-xlabel('epsilon 1'); ylabel('Resistance hydraulique');
+figure(2);plot(X_arr(1:k-1),R_arr(1:k-1) , 'b--o');
+title('Resistance hydraulique en fonction de longeur obstacle');
+xlabel('epsilon 2'); ylabel('Resistance hydraulique');
