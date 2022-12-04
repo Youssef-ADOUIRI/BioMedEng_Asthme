@@ -93,12 +93,12 @@ end
 
 % conditions a la derive normale hors
 for i=2:abs1-1
-    k=(ny-1)*nx + i;
+    k=(ny-1)*nx + i; 
     Y3(k,k) = 1.0; Y3(k , k - nx) = -1.0;
 end
 
 for i=abs1+long1+1:nx-1
-    k=(ny-1)*nx +i;
+    k=(ny-1)*nx +i; 
     Y3(k,k) = 1.0; Y3(k ,k - nx) = -1.0;
 end
 %derivee normale dans obstacle 1
@@ -133,18 +133,18 @@ end
 
 %derivee normale gauche droite obstocale 1
 for j=ny-ord1+1:ny-1
-    k=(j-1)*nx+abs1;
+    k=(j-1)*nx+abs1; 
     A3(k,k) = 1.0; A3(k ,k - 1) = -1.0;
-    
-    k=(j-1)*nx+abs1+long1;
+
+    k=(j-1)*nx+abs1+long1; 
     A3(k,k) = -1.0; A3(k , k + 1) = 1.0;
 end
 %derivee normale gauche droite obstocale 2
 for j=2:ord2-1
-    k=(j-1)*nx+abs2;
+    k=(j-1)*nx+abs2; 
     A3(k,k) = 1.0; A3(k ,k - 1) = -1.0;
-    
-    k=(j-1)*nx+abs2+long2;
+
+    k=(j-1)*nx+abs2+long2; 
     A3(k,k) = -1.0; A3(k , k + 1) = 1.0;
 end
 
@@ -203,8 +203,8 @@ end
 
 %droite d'obstacele 1 pression
 for j=ny-ord1:ny - 1
-    i = abs1 + long1 ;
-    k = (j-1)*nx + i;
+i = abs1 + long1 ;
+k = (j-1)*nx + i;
     A3(k,:)=0;
     Y3(k,:)=0;
     P3(k,:)=0;
@@ -213,8 +213,8 @@ for j=ny-ord1:ny - 1
 end
 %droite d'obstacele 2 pression
 for j=2:ord2
-    i = abs2 + long2;
-    k = (j-1)*nx + i;
+i = abs2 + long2;
+k = (j-1)*nx + i;
     A3(k,:)=0;
     Y3(k,:)=0;
     P3(k,:)=0;
@@ -234,9 +234,6 @@ end
 
 %conditions corners parois
 for k=[(ny - 1)*nx + abs1,  (ny -1)*nx+abs1 + long1]
-    A3(k,:)=0;
-    Y3(k,:)=0;
-    P3(k,:)=0;
     
     Y3(k,k+1) =a;
     Y3(k,k-1)=a;
@@ -249,9 +246,6 @@ for k=[(ny - 1)*nx + abs1,  (ny -1)*nx+abs1 + long1]
 end
 %conditions corners parois 2
 for k=[abs2,  abs2 + long2]
-    A3(k,:)=0;
-    Y3(k,:)=0;
-    P3(k,:)=0;
     
     Y3(k,k+1) =a;
     Y3(k,k-1)=a;
@@ -265,5 +259,3 @@ end
 
 Y2 = A1;
 A = [A1 Y1 P1; A2 Y2 P2; A3 Y3 P3];
-
-end

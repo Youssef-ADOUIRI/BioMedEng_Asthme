@@ -3,8 +3,8 @@ clear all
 
 %Variables Global
 global M N D L eta Pg Pd
-M = 120;
-N = 40;
+M = 60;
+N = 20;
 D = 0.0075;
 L = 0.0532;
 eta = 1.79e-5;
@@ -15,11 +15,11 @@ Pd = 0;
 dx=L/(M-1); dy=D/(N-1);
 
 
-ite_num = 50;
+ite_num = 20;
 Q_arr = zeros(ite_num);
 X_arr = zeros(ite_num);
 for k=1:ite_num
-    c = 1+k*0.4;
+    c = 1+k*0.2;
 
     m = round(M*c);
     n = round(N*c);
@@ -48,9 +48,13 @@ for k=1:ite_num
     Qm = mean(DQ);
     disp([ num2str(k) , ') Débit moyen : ' , num2str(Qm) , ' SI'])
     Q_arr(k) = Qm;
-    X_arr(k) = ite_num; % ??
+    X_arr(k) = m * n ; 
 end
 %Ploting
-figure(1);plot(X_arr(1:k-1),R_arr(1:k-1) , 'r--o');
-title('Debit moyen dans un tube deroit en faction de facteur d"augmentation de maillage');
-xlabel('epsilon 1'); ylabel('Resistance hydraulique');
+figure(1);plot(X_arr(1:k-1),Q_arr(1:k-1) , 'r--o');
+title('Variation de debit en faction de maillage');
+xlabel('Taille de Maillage (M*N)'); ylabel('Debit');
+%%
+% 
+% $$e^{\pi i} + 1 = 0$$
+% 
