@@ -59,7 +59,7 @@ for k=2:M-1
     if k < abs1-1 || k > abs1 + long1 + 1
         Qt = (mean(Pr(k-1,:)) -  mean(Pr(k+1,:))) * (D^3) / (12*eta*2*L/(M-1));
     elseif k > abs1 && k < abs1 + long1
-        d = ( N - ord1 - 2)*D/(N - 1);
+        d = ( N - ord1 - 1)*D/(N - 1);
         Qt = (mean(Pr(k-1,1:N - ord1 -1)) -  mean(Pr(k+1,1:N - ord1 -1))) * (d^3) / (12*eta*2*L/(M-1));
     end
     DQt(k)=Qt;
