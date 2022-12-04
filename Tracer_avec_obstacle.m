@@ -69,13 +69,14 @@ DQt(1) = (mean(Pr(1,:)) -  mean(Pr(2,:))) * (D^3) / (12*eta*L/(M-1));
 DQt(M) = (mean(Pr(M-1,:)) -  mean(Pr(M,:))) * (D^3) / (12*eta*L/(M-1));
 p = (max(DQ)-min(DQ))/mean(DQ);
 disp(['Incértitude : ' , num2str(p*100) , '%'])
-figure(4);plot(X,DQ);title('Debit calculée');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 2.5e-3 ]);
-figure(5);plot(X,DQt);title('Debit Thorique');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 3.5e-3 ]);
-figure(6);plot(X,(DQt./DQ)*100);title('(Debit Thorique) / (Debit calculée)  ');xlabel('Longeur X'); ylabel('Rapport %');axis([ 0 L 0 100 ]);
-
+%figure(4);plot(X,DQ);title('Debit calculée');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 2.5e-3 ]);
+%figure(5);plot(X,DQt);title('Debit Thorique');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 3.5e-3 ]);
+%figure(5);plot(X,(DQt./DQ)*100);title('(Debit Thorique) / (Debit calculée)  ');xlabel('Longeur X'); ylabel('Rapport %');axis([ 0 L 0 100 ]);
+figure(4);plot(X,DQt , X , DQ);title('comparaison avec theorie');xlabel('Longeur X'); ylabel('Rapport %');axis([ 0 L 0 3.5e-3 ]);
+legend('Debit Thorique','Debit calculée')
 %Moyen debit
 disp(['Moyen du debit : ' , num2str(mean(Q)) , ' SI'])
 
 %Resistance
-Rh = (Pg - Pd)/mean(Q);
+Rh = (Pg - Pd)/mean(DQ);
 disp(['Resistance hydraulique : ' , num2str(Rh) , ' SI'])
