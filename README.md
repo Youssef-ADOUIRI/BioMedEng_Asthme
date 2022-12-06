@@ -1,6 +1,6 @@
 # BioMedEng_Asthme
 
-Ce dépôt contient les codes MATLAB utilises dans le Projet Biomedical Engineering pour la simulation de l’écoulement de l’air dans les bronches asthmatiques.
+Ce dépôt contient les codes MATLAB utilises dans le Projet Biomedical Engineering pour la simulation de l’écoulement de l’air dans les bronches asthmatiques. Vous pouvez également trouver les graphes dans le dossier "Figures"
 
 # Prérequis
 
