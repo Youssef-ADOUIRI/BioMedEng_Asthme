@@ -19,7 +19,8 @@ F=zeros(M,3*N);
 [A,B]=laplace2d_General_v1(F,M,N,L,D,eta,Pg,Pd , abs1 , ord1 , long1);
 disp(size(B));
 disp(size(A));
-
+disp(long1*L/M);
+disp(ord1*D/N);
 U =A\B;
 U_x=reshape(U(1:M*N),M,N); %Vitesse Ux
 U_y=reshape(U(M*N+1:2*M*N),M,N); %Vitesse Uy
@@ -35,10 +36,12 @@ end
 
 X = (0:L/(M-1):L);
 Y = (0:D/(N-1):D);
-
-figure(1); surfc( X, Y , U_xy.'); title('Norme de Vitesse');xlabel('Longeur X'); ylabel('Hauteur Y'); shading interp; colorbar;
-figure(2); surfc( X, Y , Pr.'); title('Pression');xlabel('Longeur X'); ylabel('Hauteur Y'); shading flat; colorbar;
-
+figure(1); surfc( X, Y , U_xy.'); title('Profil de la vitesse');xlabel('x (en m)'); ylabel('y (en m)'); shading interp; 
+h1 = colorbar;
+set(get(h1,'label'),'string','Vitesse u (en m/s)');
+figure(2); surfc( X, Y , Pr.'); title('Profil de la pression');xlabel('x (en m)'); ylabel('y (en m)'); shading flat;
+h2 = colorbar;
+set(get(h2,'label'),'string','Pression P (en Pa)');
 %Test de validation
 [IsValid , ErrM, ErrM1, ErrM2] = Validate_StokesEq_obs(U_x , U_y , Pr , abs1 , ord1 , long1);
 disp(['Erreur de validation : ', num2str(IsValid) ]);
@@ -72,8 +75,8 @@ disp(['Incértitude : ' , num2str(p*100) , '%'])
 %figure(4);plot(X,DQ);title('Debit calculée');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 2.5e-3 ]);
 %figure(5);plot(X,DQt);title('Debit Thorique');xlabel('Longeur X'); ylabel('Debit');axis([ 0 L 0 3.5e-3 ]);
 %figure(5);plot(X,(DQt./DQ)*100);title('(Debit Thorique) / (Debit calculée)  ');xlabel('Longeur X'); ylabel('Rapport %');axis([ 0 L 0 100 ]);
-figure(4);plot(X,DQt , X , DQ);title('comparaison avec theorie');xlabel('Longeur X'); ylabel('Rapport %');axis([ 0 L 0 3.5e-3 ]);
-legend('Debit Thorique','Debit calculée')
+figure(4);plot(X,DQt , X , DQ);title('Comparaison avec une approximation de la loi de Poiseuille locale');xlabel('x (en m)'); ylabel('Debit surfacique (en m�/s)');axis([ 0 L 0 3.5e-3 ]);
+legend('Debit Analytique','Debit Numerique')
 %Moyen debit
 disp(['Moyen du debit : ' , num2str(mean(Q)) , ' SI'])
 
