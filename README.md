@@ -50,8 +50,8 @@ Calculer l’inverse de la matrice A dans le cas de deux déformations.
 
 ### [Reistance_long.m](https://github.com/Youssef-ADOUIRI/BioMedEng_Asthme/blob/master/Reistance_long.m)
 
-Tracer la résistance en fonction de la longueur de la déformation.
+Tracer la résistance en fonction de la longueur de la déformation. Nécessite le fichier “laplace2d_General_v1.m”.
 
 ### [Reistance_ord.m](https://github.com/Youssef-ADOUIRI/BioMedEng_Asthme/blob/master/Reistance_ord.m)
 
-Tracer la résistance en fonction de la hauteur de la déformation.
+Tracer la résistance en fonction de la hauteur de la déformation. Nécessite le fichier “laplace2d_General_v1.m”.
