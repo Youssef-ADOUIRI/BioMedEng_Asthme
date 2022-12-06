@@ -9,11 +9,10 @@ ord1 = 2;
 long1 = 5;
 dx=L/(M-1); dy=D/(N-1);
 
-
-
 ite_num = 50;
 R_arr = zeros(ite_num);
 X_arr = zeros(ite_num);
+Rt_arr = zeros(ite_num);
 for k=1:ite_num
     c = 1+k*0.4;
     abs=abs1;
@@ -51,10 +50,14 @@ for k=1:ite_num
     %Resistance
     Rh = (Pg - Pd)/mean(DQ);
     disp([ num2str(k) , ') Resistance hydraulique : ' , num2str(Rh) , ' SI'])
+    Rt = (12*eta*(L-(long-2)*dx)/(D^3) + 12*eta*(long+1)*dx/(D-ord*dy)^3);
     R_arr(k) = Rh;
+    Rt_arr(k) = Rt;
     X_arr(k) = long*dx;
 end
 
-figure(2);plot(X_arr(1:k-1),R_arr(1:k-1) , 'b--o');
-title('Resistance hydraulique en fonction de longeur obstacle');
-xlabel('epsilon 2'); ylabel('Resistance hydraulique');
+figure(1);plot(X_arr(1:k-1),R_arr(1:k-1), X_arr(1:k-1),Rt_arr(1:k-1), 'r--o');
+%plot(,'r--o');
+legend('Resistance','Resistance Poiseuille')
+title('Resistance hydraulique en fonction de hauteur obstacle');
+xlabel('epsilon 1 (en m)'); ylabel('Resistance hydraulique (en Pa.s/m²)');
