@@ -1,22 +1,16 @@
 # BioMedEng_Asthme
----
-Modelisation de l’augmentation de la résistance aérienne bronchique dans matlab
-
-# Introduction
-
----
 
 Ce dépôt contient les codes MATLAB utilises dans le Projet Biomedical Engineering pour la simulation de l’écoulement de l’air dans les bronches asthmatiques.
 
 # Prérequis
 
----
+
 
 MATLAB
 
 # Fichiers
 
----
+
 
 ## Bronche saine
 
